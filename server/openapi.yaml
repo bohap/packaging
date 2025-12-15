@@ -1,0 +1,113 @@
+openapi: 3.0.3
+info:
+  title: Packaging Service API
+  description: API for managing pack sizes and calculating packaging requirements.
+  version: 1.0.0
+servers:
+  - url: /
+paths:
+  /package:
+    post:
+      summary: Calculate required packs
+      description: Calculates the optimal number of packs needed for a specific number of items.
+      operationId: calculatePacks
+      requestBody:
+        description: The number of items to pack.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductsPackageRequest'
+      responses:
+        '200':
+          description: Successful calculation. Returns a map where the key is the pack size and the value is the quantity of that pack.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductPackageResponse'
+        '400':
+          description: Bad Request. Invalid input or configuration error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error. Failed to pack items.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /packs:
+    post:
+      summary: Sync available pack sizes
+      description: Updates the configuration of allowed pack sizes.
+      operationId: syncPacks
+      requestBody:
+        description: List of available pack sizes.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PacksSyncRequest'
+      responses:
+        '200':
+          description: Packs successfully synced.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "OK"
+        '400':
+          description: Bad Request. Invalid input format.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error. Failed to sync packs.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ProductsPackageRequest:
+      type: object
+      required:
+        - numberOfItems
+      properties:
+        numberOfItems:
+          type: integer
+          description: The total number of items to be packed.
+          example: 501
+    ProductPackageResponse:
+      type: object
+      description: A map representing the result. Key = Pack Size, Value = Quantity.
+      additionalProperties:
+        type: integer
+      example:
+        "500": 1
+        "250": 1
+        "1": 1
+    PacksSyncRequest:
+      type: object
+      required:
+        - packs
+      properties:
+        packs:
+          type: array
+          description: Array of available pack sizes (integers).
+          items:
+            type: integer
+          example: [ 250, 500, 1000, 2000, 5000 ]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid input"

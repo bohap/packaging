@@ -1,0 +1,42 @@
+<h3>Manage Packs</h3>
+
+@if (loading()) {
+  <mat-spinner />
+} @else {
+  <form [formGroup]="form" (submit)="onSubmit()" class="form-container">
+
+    <div class="packs" formArrayName="packs">
+      @for (pack of form.controls.packs.controls; track $index) {
+        <div>
+          <mat-form-field class="full-width">
+            <mat-label>Pack {{ $index + 1 }}</mat-label>
+            <input matInput type="number" [formControlName]="$index">
+            @if (pack.errors) {
+              <mat-error>Value is invalid</mat-error>
+            }
+          </mat-form-field>
+
+          <button mat-icon-button type="button" (click)="removeQuantity($index)" [disabled]="submitting()"
+                  aria-label="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <div class="actions" style="margin-bottom: 10px">
+      <button mat-stroked-button color="primary" type="button" [disabled]="submitting()" (click)="addPack()" style="margin-right: 10px">
+        <mat-icon>add</mat-icon>
+        Add New Pack
+      </button>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || submitting()">
+        Submit
+      </button>
+
+      @if (submitting()) {
+        <mat-spinner />
+      }
+    </div>
+  </form>
+}

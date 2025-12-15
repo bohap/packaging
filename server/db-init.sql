@@ -1,0 +1,4 @@
+CREATE TABLE packs
+(
+    size BIGINT PRIMARY KEY
+);

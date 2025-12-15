@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # DB
+  db:
+    image: postgres:16.2
+    environment:
+      - POSTGRES_USER=server
+      - POSTGRES_PASSWORD=server
+      - POSTGRES_DB=server
+    networks:
+      - app
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./server/db-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U server -d server" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: ./server
+    ports:
+      - "8080:8080"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USERNAME=server
+      - DB_PASSWORD=server
+      - DB_NAME=server
+    networks:
+      - app
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # The Frontend
+  ui:
+    build: ./ui
+    ports:
+      - "4200:80"
+    networks:
+      - app
+    depends_on:
+      - api
+
+networks:
+  app:
+    driver: bridge
+
+volumes:
+  db_data:

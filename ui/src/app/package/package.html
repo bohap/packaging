@@ -1,0 +1,35 @@
+<h3>Package</h3>
+<mat-form-field>
+  <mat-label>Package</mat-label>
+  <input matInput type="number" [formControl]="control">
+  @if (control.errors) {
+    <mat-error>Value is invalid</mat-error>
+  }
+</mat-form-field>
+
+<button mat-raised-button color="primary" type="submit" [disabled]="control.invalid || submitting()" (click)="submit()">
+  Submit
+</button>
+
+@if (submitting()) {
+  <mat-spinner />
+}
+
+@if (result()) {
+  <table>
+    <thead>
+    <tr>
+      <th>Pack</th>
+      <th>Count</th>
+    </tr>
+    </thead>
+    <tbody>
+      @for (entry of result(); track $index) {
+        <tr>
+          <td>{{ entry[0] }}</td>
+          <td>{{ entry[1] }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}
