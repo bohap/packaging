@@ -1,6 +1,6 @@
 # Packaging application
 
-THis repo contains a sample application for managing packaging. It is able to define packs size, and determine how many packs are needed for
+This repo contains a sample application for managing packaging. It is able to define packs size, and determine how many packs are needed for
 optimal delivery of a package.
 
 Contains two parts: UI and Backend
