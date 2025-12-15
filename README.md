@@ -53,3 +53,12 @@ docker-compose up -d
 ```
 
 The application can be accessed on http://localhost
+
+## Deployment
+The application is deployed on Render (free tier), and managed though `render.yaml` config.
+3 services are created here:
+ * db - postgresql
+ * web service (go)
+ * static page (angular app)
+
+UI can be accessed at https://ui-lfty.onrender.com/, and backend at https://server-k4jj.onrender.com
