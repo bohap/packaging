@@ -1,0 +1,46 @@
+services:
+  - type: web
+    name: server
+    env: go
+    rootDir: server          
+    buildCommand: go build -o main .
+    startCommand: ./main
+    plan: free
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: db
+          property: port
+      - key: DB_USERNAME
+        fromDatabase:
+          name: db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: db
+          property: database
+
+  - type: web
+    env: static
+    name: ui
+    rootDir: ui
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist/ui/browser
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: db
+    databaseName: server
+    user: server
+    plan: free
